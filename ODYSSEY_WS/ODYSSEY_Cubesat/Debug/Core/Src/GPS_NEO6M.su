@@ -1,0 +1,2 @@
+../Core/Src/GPS_NEO6M.c:2:6:GPS_Init	4	static
+../Core/Src/GPS_NEO6M.c:6:6:GPS_read	16	static

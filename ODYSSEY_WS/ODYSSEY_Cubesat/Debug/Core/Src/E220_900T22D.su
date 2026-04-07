@@ -1,0 +1,3 @@
+../Core/Src/E220_900T22D.c:4:13:LoRa_WaitAux	8	static
+../Core/Src/E220_900T22D.c:10:13:LoRa_EnterConfigMode	8	static
+../Core/Src/E220_900T22D.c:25:6:LoRa_Configure	40	static
