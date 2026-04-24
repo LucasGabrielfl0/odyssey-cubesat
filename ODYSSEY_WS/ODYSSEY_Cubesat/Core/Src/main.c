@@ -28,15 +28,15 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "BNO055.h"			// BN055 Lib
-#include "Telemetry.h"		// Telemetry Protocol, how to Pack and Unpack data Cubesat <--> Ground Station
-#include "E220_900T22D.h"
+#include "BNO055.h"				// IMU Sensor
+#include "Telemetry.h"			// Telemetry Protocol, how to Pack and Unpack data Cubesat <--> Ground Station
+//#include "E220_900T22D.h"
 //#include "GPS_NEO6M.h"	// GPS NEO6M
 
+// FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
-
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -49,13 +49,22 @@
 #define MAX_COUNTER_PWM 	4000					// Max number that the PWM register can count up to
 
 /* ======================================= HOUSE KEEPING =========================================*/
-#define ADC_TO_BATT			(8.4f/4095.0f)
-#define ADC_TO_TEMP			(155.0f/4095.0f)
+#define ADC_TO_BATT			(10.305f/4095.0f)		// Assuming 2.68V == 8.4V (Voltage Div. 47k + 100k) => therefore 3.3V == 10.32V
+#define ADC_TO_TEMP			(3.3f/4095.0f)*100.0f	// 12bit_to_Volt * Volt_to_Degree (LM35DZ, range 0 to 100°C)
 
 /* ======================================= LED's =================================================*/
-#define ERROR_LED_PORT		GPIOC
-#define ERROR_LED_PIN		GPIO_PIN_1
+#define FAULT_LED_PORT		GPIOC
+#define FAULT_LED_PIN		GPIO_PIN_15
 
+/* ======================================= LORA ====================================================*/
+#define LORA_M0_PIN			GPIO_PIN_0				// Config PIN, Digital Output Pin
+#define LORA_M0_PORT		GPIOA					// Port
+
+#define LORA_M1_PIN			GPIO_PIN_1				// Config Pin, Digital Output Pin
+#define LORA_M1_PORT		GPIOA					// Port
+
+#define LORA_AUX_PIN		GPIO_PIN_4				// Flag pin, Digital Input Pin [1: Idle , 0:Message being received]
+#define LORA_AUX_PORT		GPIOA					// Port
 
 /* USER CODE END PD */
 
@@ -66,41 +75,45 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-/*========================================= CONTROL SYSTEM ==========================================*/
+/*============================================ CONTROL SYSTEM ==========================================*/
 // Control Signal (Duty Cycle)
-uint16_t DutyC[3]  	   =  {0, 0, 0};			// Duty Cycle as an int, to Control PWM reg
-float    u_DutyC[3]    =  {0, 0 ,0}; 			// Controller Output, float PWM value [0,  max count]
+uint16_t DutyC[3]  	   =  {0, 0, 0};				// Duty Cycle as an int, to Control PWM reg
+float    u_DutyC[3]    =  {0, 0 ,0}; 				// Controller Output, float PWM value [0,  max count]
 
 // Attitude [Row, Pitch, Yaw]
-float AttEuler[3] 		= {0, 0, 0};			// Current orientation in degreees
-float Att_Setpoint[3]  	= {0, 0, 0};			// Current Setpoint in degreers
-float Att_Error[3]		= {0, 0, 0};			// Error in Degrees
+float AttEuler[3] 		= {0, 0, 0};				// Current orientation in degreees
+float Att_Setpoint[3]  	= {0, 0, 0};				// Current Setpoint in degreers
+float Att_Error[3]		= {0, 0, 0};				// Error in Degrees
 
 // Acc and Gyro [mostly for debug]
-float Acc[3]  = {0, 0, 0};						// AccX , AccY , AccZ
-float Gyro[3] = {0, 0, 0};						// GyroX, GyroY, GyroZ
+float Acc[3]  = {0, 0, 0};							// AccX , AccY , AccZ
+float Gyro[3] = {0, 0, 0};							// GyroX, GyroY, GyroZ
 
-/*==========================================  HOUSE KEEPING ======================================*/
+/*===============================================  HOUSE KEEPING ======================================*/
 //
-uint32_t ADC_DMA_Buffer[2]={0};
+uint16_t ADC_DMA_Buffer[2]={0,0};
 
 // Time Stamp (Message Counter)
 uint8_t MsgCounter = 0;
 
 /*=========================================  TELEMETRY =============================================*/
 // Message Buffers
-uint8_t TelemetryPacket[TELEMETRY_PACKET_SIZE];				//
-uint8_t	CommandPacket[COMMAND_PACKET_SIZE];					//
-uint8_t	HouseKeepingPacket[HOUSEKEEPING_PACKET_SIZE];		//
+uint8_t TelemetryPacket[TELEMETRY_PACKET_SIZE];
+uint8_t	CommandPacket[COMMAND_PACKET_SIZE];
+uint8_t	HouseKeepingPacket[HOUSEKEEPING_PACKET_SIZE];
 
-//
-uint8_t IMU_Data[18] = {0};									// Acc[0-5], Gyro[6-11] and Heading[12-18]
-float HK_Data[2];											// House Keeping: Battery, Temp
-float GPS_Data[3] = {0};									// Lat, Long and Alt
+// Arrays used by the Telemetry functions
+uint8_t IMU_Data[18]	= {0};								// Acc[0-5], Gyro[6-11] and Heading[12-18]
+float HK_Data[3]	 	= {0};								// House Keeping: Battery, Temp
+float GPS_Data[2]    	= {0};								// Lat, Long and Alt
 
-//
+//CRC
+uint16_t Actual_CRC = 0;
+uint16_t Msg_CRC	 = 0;
+
+// FreeRTOS
 SemaphoreHandle_t LORA_mutex;
-uint8_t Buffer2[13] = {5};
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -109,42 +122,15 @@ void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /*===================================== CONTROL SYSTEM =====================================*/
-extern void Control_ISR();						// Callback function for the Control Loop
+extern void Control_ISR();					// Callback function for the Control Loop
+void ADCS_PWM_Init();						// Start all 6 PWMs
 
 /*====================================== TELEMETRY SYSTEM ====================================*/
-//void Send_to_GroundStation();						// Sends radio to GS via radio, every 100ms
-//void Send_to_GroundStation_HouseKeeping();					// Sends radio to GS via radio, every 100ms
-void Receive_From_GroundStation();
+void E220_Init();							// Blocks Until LoRa has Initialized
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-//void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-{
-//	DutyC[2]= Size;
-
-//    if(huart->Instance == USART2 && Size == COMMAND_PACKET_SIZE)
-	if(huart->Instance == USART2)
-	{
-//    	if(Buffer2[0] != START_BYTE1 && Buffer2[1] != START_BYTE2) return;
-    	DutyC[1]++;
-    	if(DutyC[1] > 1000) { DutyC[1] = 0; }
-//    	DutyC[2] = CommandPacket[0];
-    	// Decode packet and Reactivate the DMA ISR
-
-//        uint16_t CRC = CRC16_CCITT(CommandPacket, COMMAND_PACKET_SIZE - 2);		// Calculate CRC (Not very lightweight but ces't la vie)
-//    	Decode_ControlPacket(CommandPacket, Att_Setpoint); 						// Very Lightweight and not often called
-//    	HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
-
-    	Decode_ControlPacket(Buffer2, Att_Setpoint); 							// Very Lightweight and not often called
-    	HAL_UART_Receive_DMA(&huart2, Buffer2, COMMAND_PACKET_SIZE);
-//    	HAL_UARTEx_ReceiveToIdle_DMA(&huart2, Buffer2, COMMAND_PACKET_SIZE);
-    }
-
-}
-
-
 /* USER CODE END 0 */
 
 /**
@@ -181,48 +167,32 @@ int main(void)
   MX_USART2_UART_Init();
   MX_TIM2_Init();
   MX_I2C1_Init();
-  MX_USART1_UART_Init();
   MX_TIM3_Init();
-  MX_USART6_UART_Init();
+  MX_TIM4_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
 
   /* ============================================= SETUP / START ============================================== */
   // IMU: Doesnt Start without BNO055 -------------------------------------------------------------------------
   while(BNO055_Init(&hi2c1) != HAL_OK)
   {
-	  HAL_GPIO_TogglePin(ERROR_LED_PORT, ERROR_LED_PIN);
-	  HAL_Delay(10);
+	  HAL_GPIO_TogglePin(FAULT_LED_PORT, FAULT_LED_PIN);
+	  HAL_Delay(50);
   }
+  HAL_GPIO_WritePin(FAULT_LED_PORT, FAULT_LED_PIN, RESET);
 
-  // LORA EBYTE SETUP --------------------------------------------------------------------------------------------//
-  HAL_GPIO_WritePin(LORA_M0_PORT, LORA_M0_PIN, RESET);
-  HAL_GPIO_WritePin(LORA_M1_PORT, LORA_M1_PIN, RESET);
-  while (HAL_GPIO_ReadPin(LORA_AUX_PORT, LORA_AUX_PIN) == GPIO_PIN_RESET);
 
-  // UART SETUP --------------------------------------------------------------------------------------------//
-//  HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
-  HAL_UART_Receive_DMA(&huart2, Buffer2, COMMAND_PACKET_SIZE);
-//HAL_UARTEx_ReceiveToIdle_DMA(&huart2, Buffer2, COMMAND_PACKET_SIZE);
+  // LORA EBYTE SETUP --------------------------------------------------------------------------------------//
+  E220_Init();															// LoRa Config
+  HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);	// Receive command ISR
 
-  // CONTROL ISR SETUP ----------------------------------------------------------------------------------------------------//
-  HAL_TIM_Base_Start_IT(&htim2);
+  // CONTROL SYSTEM-----------------------------------------------------------------------------------------//
+//  ADCS_PWM_Init();														// 6 PWM Config
+//  HAL_TIM_Base_Start_IT(&htim3);										// Control ISR
 
-  // PWM SETUP ----------------------------------------------------------------------------------------------------//
-  // Motor 1
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);		// M1 CW
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);		// M1 CCW
-  // Motor 2
-  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);		// M2 CW
-//  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);		// M2 CCW
-  // Motor 3
-//  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);		// M3 CCW
-//  HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);		// M3 CW
-
-  // ADC SETUP ---------------------------------------------------------------------------------------------------//
-  HAL_ADC_Start_DMA(&hadc1, ADC_DMA_Buffer, 2);
-
-  //
-  LORA_mutex = xSemaphoreCreateMutex();
+  // ADC SETUP ---------------------------------------------------------------------------------------------//
+  // I'm cheating a bit here so i dont get a warning, the data is uint16 but the prototype is only 32bit
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ADC_DMA_Buffer, 2);							// Start DMA to read Bat and Temp
 
   /* USER CODE END 2 */
 
@@ -239,9 +209,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  /* USING FREERTOS: CODE NEVER GETS HERE */
-//	  HK_Data[0] = (float)ADC_DMA_Buffer[0] * ADC_TO_BATT;
-//	  HAL_Delay(100);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -296,8 +263,38 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-//void
+/* ###################################################### INIT FUNC. ############################################################## */
+void E220_Init()
+{
+	// Set to normal Mode
+	HAL_GPIO_WritePin(LORA_M0_PORT, LORA_M0_PIN, RESET);
+	HAL_GPIO_WritePin(LORA_M1_PORT, LORA_M1_PIN, RESET);
 
+	// Delay until LoRa module is ready to go
+	while (HAL_GPIO_ReadPin(LORA_AUX_PORT, LORA_AUX_PIN) == GPIO_PIN_RESET)
+	{
+		HAL_GPIO_TogglePin(FAULT_LED_PORT, FAULT_LED_PIN);
+		HAL_Delay(50);
+	}
+
+	HAL_GPIO_WritePin(FAULT_LED_PORT, FAULT_LED_PIN, RESET);
+}
+
+void ADCS_PWM_Init()
+{
+	// Motor 1
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);		// M1 CW
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);		// M1 CCW
+
+	// Motor 2
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);		// M2 CW
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);		// M2 CCW
+
+	// Motor 3
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);		// M3 CCW
+	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);		// M3 CW
+
+}
 
 /* ###################################################### TELEMETRY, TRACKING AND COMMAND ############################################# */
 /* Receives only one data packet from the Ground Station:
@@ -309,13 +306,40 @@ void SystemClock_Config(void)
  */
 /* ======================================================= TT&C: RECEIVE COMMAND ==================================================== */
 /* Callback Function Every Time the LORA radio receives a full message */
-//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
-//{
-//	// Decode packet and Reactivate the DMA ISR
-//																			// Calculate CRC (Not very lightweight but ces't la vie)
-//	Decode_ControlPacket(CommandPacket, Att_Setpoint); 						// Very Lightweight and not often called
-//	HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
-//}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+
+	if(huart->Instance == USART2)
+	{
+		DutyC[1]++;
+		if(DutyC[1] > 1000) { DutyC[1] = 0; }
+
+		// Check Begining of the message
+		if(CommandPacket[0] != START_BYTE1 || CommandPacket[1] != START_BYTE2)
+		{
+			HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
+			return;
+		}
+
+        // CYCLIC REDUNDANCY CHECK --------------------------------------------------//
+    	// Calculate CRC (Not very lightweight but ces't la vie)
+		Msg_CRC 	= ( (uint16_t)CommandPacket[COMMAND_PACKET_SIZE-1] << 8 ) |  ( (uint16_t)CommandPacket[COMMAND_PACKET_SIZE-2] );
+    	Actual_CRC = CRC16_CCITT(CommandPacket, COMMAND_PACKET_SIZE - 2);
+
+    	// If the message is corrupted, ignores it
+    	if(Actual_CRC != Msg_CRC)
+		{
+			HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
+			return;
+		}
+
+    	// Decode packet and Reactivate the DMA ISR
+        Decode_CommandPacket(CommandPacket, Att_Setpoint); 						// Very Lightweight and not often called
+    	HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
+	}
+
+}
+
 
 /* ================================================= TT&C: SEND TELEMETRY DATA  ==================================================== */
 /* Sends the data to Ground Station via radio Module every 100ms*/
@@ -334,16 +358,11 @@ void Send_to_GroundStation_Telemetry(void *argument)
 
 		// SEND PACKET TO RADIO ----------------------------------------------------------------------------- //
 		xSemaphoreTake(LORA_mutex, portMAX_DELAY);
-//		HAL_UART_DMAPause(&huart2);
-//		HAL_UART_Transmit(&huart2, TelemetryPacket, sizeof(TelemetryPacket), HAL_MAX_DELAY);
-		vTaskDelay(pdMS_TO_TICKS(20));
-//		HAL_UART_DMAResume(&huart2);
+		HAL_UART_Transmit(&huart2, TelemetryPacket, sizeof(TelemetryPacket), HAL_MAX_DELAY);
 		xSemaphoreGive(LORA_mutex);
 
-		// 100ms Delay between messages
-		vTaskDelay(pdMS_TO_TICKS(2000));
-//		vTaskDelay(pdMS_TO_TICKS(1000));
-
+		// 100ms Delay between consecutive messages
+		vTaskDelay(pdMS_TO_TICKS(100));
 	}
 }
 
@@ -351,47 +370,75 @@ void Send_to_GroundStation_Telemetry(void *argument)
 /* Sends the data to Ground Station via radio Module every 1s*/
 void Send_to_GroundStation_HouseKeeping(void *argument)
 {
+	uint16_t Temp = 0;
 	while(1)
 	{
 		// GPS DATA ------------------------------------------------------------------------------- //
+		GPS_Data[0] = 10;		//
+		GPS_Data[1] = 50;		//
 
-
-		// HOUSE KEEPING DATA ------------------------------------------------------------------------------- //
+		/* HOUSE KEEPING DATA ------------------------------------------------------------------------------- */
 		// Battery Voltage [0 - 8.4V]
-		HK_Data[0] = (float)(ADC_DMA_Buffer[0] & 0xFFF) * ADC_TO_BATT;
+		HK_Data[0] = (float)ADC_DMA_Buffer[0] * ADC_TO_BATT;	// Raw Voltage
+																// Moving Average
+		// Temperature [0 to 100]
+		HK_Data[1] = (float)ADC_DMA_Buffer[1] * ADC_TO_TEMP;
 
-		// Temperature [-55 to 100]
-		HK_Data[1] = (float)(ADC_DMA_Buffer[0] & 0xFFF) * ADC_TO_TEMP;
+		// Status [0 = OK]
+		HK_Data[2] = 0;
 
-		// ENCODE DATA PACKET ------------------------------------------------------------------------------- //
-//		Encode_HouseKeepingPacket(HouseKeepingPacket, Att_Setpoint, GPS_Data, HK_Data);
+		/* ENCODE DATA PACKET ------------------------------------------------------------------------------- */
+		Encode_HouseKeepingPacket(HouseKeepingPacket, Att_Setpoint, HK_Data, GPS_Data);
 
-		// SEND PACKET TO RADIO ----------------------------------------------------------------------------- //
-//		xSemaphoreTake(LORA_mutex, 30);
-//		HAL_UART_Transmit(&huart2, HouseKeepingPacket, sizeof(HouseKeepingPacket), HAL_MAX_DELAY);
-//		vTaskDelay(pdMS_TO_TICKS(20));
-//		xSemaphoreGive(LORA_mutex);
+		/* SEND PACKET TO RADIO ----------------------------------------------------------------------------- */
+		// Holds until the UART Tx is clear + delay of 20 ms between Telemetry and HouseKeeping msg
+		xSemaphoreTake(LORA_mutex, portMAX_DELAY);
+		vTaskDelay(pdMS_TO_TICKS(20));
 
-		// 1s delay between msgs
-		vTaskDelay(pdMS_TO_TICKS(1000));
+		// Transmit message
+		HAL_UART_Transmit(&huart2, HouseKeepingPacket, HOUSEKEEPING_PACKET_SIZE, HAL_MAX_DELAY);
+
+		// Holds 20ms before letting another message use Mutex
+		vTaskDelay(pdMS_TO_TICKS(20));
+		xSemaphoreGive(LORA_mutex);
+
+		// 2s delay between msgs
+		vTaskDelay(pdMS_TO_TICKS(2000));
 	}
 
 }
 
 /*##################################################### ATT. DETERMINATION AND CONTROL ###################################################*/
-/* Control System ISR, runs every 10ms */
+/* Control System ISR, runs every 10ms
+ * Manual Mode: The motor runs proportional to the Setpoint for 5s, then it stops
+ *
+ *
+ * */
 void Control_ISR()
 {
-	DutyC[0]++;
-	if(DutyC[0] > 1000) { DutyC[0] = 0; }
+	// Aux Variables
+	uint8_t Dir[3] = {0,0,0};		// 0 = CW, 1 = CCW;
+	uint16_t TestCounter = 0;		//
 
+	//
+	//	DutyC[0]++;
+//	if(DutyC[0] > 1000) { DutyC[0] = 0; }
 
+	// Row -----------------
+	if(1<0)
+	{}
+	else
+	{
+		TIM1->CCR1 = 1;
+		DutyC[1] = 1;
+	}
 	/*
 	// ================ Aply Previous Control ================ //
 	TIM1->CCR1 = DutyC[0];			// Control Row   (X axys)
 	TIM1->CCR2 = DutyC[1];			// Control Pitch (Y axys)
 	TIM1->CCR3 = DutyC[2];			// Control Yaw   (Z axys)
-
+	*/
+	/*
 	// ================ READ IMU ================ //
 	IMU_Quat(&hi2c1, AttQuat, IMU_int16);	// Reads Current Att. (Quaternions)
 

@@ -1,17 +1,30 @@
-01:15:05 **** Incremental Build of configuration Debug for project ODYSSEY_Cubesat ****
+20:55:15 **** Incremental Build of configuration Debug for project ODYSSEY_Cubesat ****
 make -j16 all 
-arm-none-eabi-gcc "../Core/Src/E220_900T22D.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -O0 -ffunction-sections -fdata-sections -Wall -Wno-reentrant -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/E220_900T22D.d" -MT"Core/Src/E220_900T22D.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/E220_900T22D.o"
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F411xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I../Middlewares/Third_Party/FreeRTOS/Source/include -I../Middlewares/Third_Party/FreeRTOS/Source/CMSIS_RTOS_V2 -I../Middlewares/Third_Party/FreeRTOS/Source/portable/GCC/ARM_CM4F -O0 -ffunction-sections -fdata-sections -Wall -Wno-reentrant -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'Send_to_GroundStation_HouseKeeping':
+../Core/Src/main.c:373:18: warning: unused variable 'Temp' [-Wunused-variable]
+  373 |         uint16_t Temp = 0;
+      |                  ^~~~
+../Core/Src/main.c: In function 'Control_ISR':
+../Core/Src/main.c:421:18: warning: unused variable 'TestCounter' [-Wunused-variable]
+  421 |         uint16_t TestCounter = 0;               //
+      |                  ^~~~~~~~~~~
+../Core/Src/main.c:420:17: warning: unused variable 'Dir' [-Wunused-variable]
+  420 |         uint8_t Dir[3] = {0,0,0};               // 0 = CW, 1 = CCW;
+      |                 ^~~
+At top level:
+cc1.exe: note: unrecognized command-line option '-Wno-reentrant' may have been intended to silence earlier diagnostics
 arm-none-eabi-gcc -o "ODYSSEY_Cubesat.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\STM32F411CEUX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ODYSSEY_Cubesat.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 Finished building target: ODYSSEY_Cubesat.elf
  
 arm-none-eabi-size  ODYSSEY_Cubesat.elf 
 arm-none-eabi-objdump -h -S ODYSSEY_Cubesat.elf  > "ODYSSEY_Cubesat.list"
    text	   data	    bss	    dec	    hex	filename
-  40648	     32	  21384	  62064	   f270	ODYSSEY_Cubesat.elf
+  41352	     16	  21336	  62704	   f4f0	ODYSSEY_Cubesat.elf
 Finished building: default.size.stdout
  
 Finished building: ODYSSEY_Cubesat.list
  
 
-01:15:08 Build Finished. 0 errors, 0 warnings. (took 2s.946ms)
+20:55:17 Build Finished. 0 errors, 3 warnings. (took 1s.892ms)
 

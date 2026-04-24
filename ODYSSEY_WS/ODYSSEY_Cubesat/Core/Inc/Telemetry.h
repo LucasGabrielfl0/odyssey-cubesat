@@ -17,12 +17,12 @@
 
 // Headers [Indicate Type of message]
 #define HEADER_TELEMETRY_PACKET         0x1					//
-#define HEADER_HOUSE_KEEPING_PACKET     0x2					//
+#define HEADER_HOUSEKEEPING_PACKET     	0x2					//
 #define HEADER_COMMAND_PACKET           0x3					//
 
 // Size of each Message in Bytes
 #define TELEMETRY_PACKET_SIZE			25					// Telmetery Packet Size [+CRC, Start Byte, ...]
-#define HOUSEKEEPING_PACKET_SIZE		22					// Control Packet Size [+CRC, Start Byte, ...]
+#define HOUSEKEEPING_PACKET_SIZE		24					// Control Packet Size [+CRC, Start Byte, ...]
 #define COMMAND_PACKET_SIZE				13					// Control Packet Size [+CRC, Start Byte, ...]
 
 
@@ -39,23 +39,23 @@
 #define GYRO_TO_INT						10.0				//
 #define ATT_TO_INT						16					//
 #define INT_TO_ATT						(1/16.0f)			//
-#define BATTERY_TO_INT   				(255.0/4095.0)		//
 #define INT_TO_ATT2						0.01
 
-#define LAT_TO_INT						1
-#define LON_TO_INT						1
-#define ALT_TO_INT						1
+#define BATTERY_TO_INT   				(255.0f/4095.0f)	//
+#define TEMP_TO_INT						2.0f				// 0.5 °C res.
+
+#define LAT_TO_INT						10000000			//
+#define LON_TO_INT						10000000			//
 
 // * ========================================== FUNC. PROTOTYPES ======================================== //
-
 // SEND MESSAGES
-void Encode_TelemetryPacket(uint8_t* TelemetryPacket, uint8_t* IMU_Buffer, uint8_t MsgCounter);							// Encode
-void Encode_HouseKeepingPacket(uint8_t* HouseKeepingPacket, float* AttSetpoint, float* GPS, float* HouseKeeping);		// Encode values into a radio MSG
+void Encode_TelemetryPacket(uint8_t* TelemetryPacket, uint8_t* IMU_Buffer, uint8_t MsgCounter);					// Encode
+void Encode_HouseKeepingPacket(uint8_t* HouseKeepingPacket, float* AttSetpoint, float* HK_Data, float* GPS);	// Encode values into a radio MSG
 
 // RECEIVE MESSAGES
-void Decode_ControlPacket(uint8_t* ControlPacket, float* AttSetpoints);        								// Get Setpoints from msg
+void Decode_CommandPacket(uint8_t* CommandPacket, float* AttSetpoints);        									// Get Setpoints from msg
 
 // DEBUG
-void EncodeFakePacket(int16_t ADCData, uint8_t* DataPacket);												// [DEBUG]
+void EncodeFakePacket(int16_t ADCData, uint8_t* DataPacket);													// [DEBUG]
 
 #endif

@@ -88,7 +88,8 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END Init */
 
   /* USER CODE BEGIN RTOS_MUTEX */
-extern SemaphoreHandle_t LORA_mutex;
+  extern SemaphoreHandle_t LORA_mutex;
+  LORA_mutex = xSemaphoreCreateMutex();
 
   /* USER CODE END RTOS_MUTEX */
 

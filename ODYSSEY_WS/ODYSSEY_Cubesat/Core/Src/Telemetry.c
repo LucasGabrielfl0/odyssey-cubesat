@@ -1,7 +1,7 @@
 #include "Telemetry.h"
 /* #################################### CUBESAT TELEMETRY  ######################################### //
 * Pack and Unpack messages from the communication system between Ground Station and Cubesat.
-* Receives (Control Packet, 11 bytes):
+* Receives (Control Packet, 13 bytes):
 *   [0]     	0xAA        	START_BYTE1
 *   [1]     	0x55        	START_BYTE2
 *   [2]     	0x00        	HEADER_CONTROL_PACKET
@@ -12,7 +12,7 @@
 *   [10]    	Mode        	uint8
 *   [11:12]     CRC-16          uint16 LE    (CRC-CCITT-16)
 *
-* Sends (Telemetry Packet, 27 bytes):
+* Sends (Telemetry Packet, 25 bytes):
 *   [0]         0xAA            START_BYTE1
 *   [1]         0x55            START_BYTE2
 *   [2]         0x01            HEADER_TELEMETRY_PACKET
@@ -20,22 +20,21 @@
 *   [4:9]       ATT data        3x int16 LE  (Roll, Pitch, Yaw) [deg]
 *   [10:15]     ACC data        3x int16 LE  (AccX, AccY, AccZ) [g]
 *   [16:21]     GYRO data       3x int16 LE  (GyroX, GyroY, GyroZ) [°/s]
-*   [22:24]     MsgCounter      uint8
-*   [25:26]     CRC-16          uint16 LE    (CRC-CCITT-16)
+*   [22]     	MsgCounter      uint8
+*   [23:24]     CRC-16          uint16 LE    (CRC-CCITT-16)
 *
-* Sends (House Keeping Packet, 27 bytes):
+* Sends (House Keeping Packet, 24 bytes):
 *   [0]         0xAA            START_BYTE1
 *   [1]         0x55            START_BYTE2
 *   [2]         0x02            HEADER_HOUSEKEEPING_PACKET
 *   [3]         0x01            ODYSSEY_ID
-*   [4]       	Mode        	uint8  ()
-*   [5:10]      ATT data        3x int16 LE  (Roll, Pitch, Yaw) [deg]
-*   [11:12]     Lattitude       int16 LE  [°]
-*   [13:14]     Longitude       int16 LE  [°]
-*   [15:16]     Altitude        int16 LE  [m]
-*   [17:18]     Battery%        int16 LE  [%]
-*   [19]     	Temperature     uint8     [°C]
-*   [20:21]     CRC-16          uint16 LE (CRC-CCITT-16)
+*   [4:9]      	ATT data        3x int16 LE  (Roll, Pitch, Yaw) [deg]
+*   [10:11]     Battery        	int16 LE  [V]
+*   [12]     	Temperature     uint8     [°C]
+*   [13]     	Status     		uint8     [Adm]
+*   [14:17]     Lattitude       int32 LE  [°]
+*   [18:21]     Longitude       int32 LE  [°]
+*   [22:23]     CRC-16          uint16 LE (CRC-CCITT-16)
 
 // =============================================================================================== */
 
@@ -92,7 +91,7 @@ void Encode_TelemetryPacket(uint8_t* TelemetryPacket, uint8_t* IMU_Buffer, uint8
 	TelemetryPacket[21] = IMU_Buffer[11];			// MSB
 
 	/* MESSAGE COUNTER  -----------------------------------------------------*/
-	TelemetryPacket[22] = MsgCounter;    					// Msg Counter [0 - 255]
+	TelemetryPacket[22] = MsgCounter;    			// Msg Counter [0 - 255]
 
     // CRC -----------------------------------------*/
     uint16_t CRC = CRC16_CCITT(TelemetryPacket, TELEMETRY_PACKET_SIZE - 2);		// Calculate CRC for this message
@@ -103,66 +102,65 @@ void Encode_TelemetryPacket(uint8_t* TelemetryPacket, uint8_t* IMU_Buffer, uint8
 
 // ======================================================= ENCODE PACKETS TO BE SENT ========================================================//
 /* Creates a Telemetry packet with the Cubesat data */
-void Encode_HouseKeepingPacket(uint8_t* HouseKeepingPacket, float* AttSetpoint, float* GPS, float* HouseKeeping)
+void Encode_HouseKeepingPacket(uint8_t* HouseKeepingPacket, float* AttSetpoint, float* HK_Data, float* GPS)
 {
-    int temp;
+	int16_t temp;
 	// *------------------------------ PACK DATA -----------------------------//
 	// Sync
     HouseKeepingPacket[0] = START_BYTE1;
     HouseKeepingPacket[1] = START_BYTE2;
 
 	// Pack Header and ID
-    HouseKeepingPacket[2] = HEADER_TELEMETRY_PACKET;
+    HouseKeepingPacket[2] = HEADER_HOUSEKEEPING_PACKET;
     HouseKeepingPacket[3] = CUBESAT_ID;
-
-    /* OPERATION MODE  -----------------------------------------------------*/
-    HouseKeepingPacket[4] = 1;
 
     /* ATTITUDE SETPOINT  -----------------------------------------------------*/
 	// Row
-	temp = (uint16_t)(AttSetpoint[0]*100.0f);
-	HouseKeepingPacket[5]  = (uint8_t)(temp & 0xFF);		// LSB
-	HouseKeepingPacket[6]  = (uint8_t)(temp >> 8);			// MSB
+	temp = (int16_t)(AttSetpoint[0]*100.0f);
+	HouseKeepingPacket[4]  = (uint8_t)(temp & 0xFF);		// LSB
+	HouseKeepingPacket[5]  = (uint8_t)(temp >> 8);			// MSB
 
 	// Pitch
-	temp = (uint16_t)(AttSetpoint[1]*100.0f);
-	HouseKeepingPacket[7]  = (uint8_t)(temp & 0xFF);		// LSB
-	HouseKeepingPacket[8]  = (uint8_t)(temp >> 8);			// MSB
+	temp = (int16_t)(AttSetpoint[1]*100.0f);
+	HouseKeepingPacket[6]  = (uint8_t)(temp & 0xFF);		// LSB
+	HouseKeepingPacket[7]  = (uint8_t)(temp >> 8);			// MSB
 
 	// Yaw
-	temp = (uint16_t)(AttSetpoint[2]*100.0f);
-	HouseKeepingPacket[9]  = (uint8_t)(temp & 0xFF);		// LSB
-	HouseKeepingPacket[10] = (uint8_t)(temp >> 8);			// MSB
-
-	/* GPS  -----------------------------------------------------*/
-	// LAT
-	temp = (uint16_t)(GPS[0]*LAT_TO_INT);
-	HouseKeepingPacket[11]  = (uint8_t)(temp & 0xFF);		// LSB
-	HouseKeepingPacket[12]  = (uint8_t)(temp >> 8);			// MSB
-
-	// LONG
-	temp = (uint16_t)(GPS[1]*LON_TO_INT);
-	HouseKeepingPacket[13]  = (uint8_t)(temp & 0xFF);		// LSB
-	HouseKeepingPacket[14]  = (uint8_t)(temp >> 8);			// MSB
-
-	// ALT
-	temp = (uint16_t)(GPS[2]*ALT_TO_INT);
-	HouseKeepingPacket[15]  = (uint8_t)(temp & 0xFF);		// LSB
-	HouseKeepingPacket[16]  = (uint8_t)(temp >> 8);			// MSB
+	temp = (int16_t)(AttSetpoint[2]*100.0f);
+	HouseKeepingPacket[8]  = (uint8_t)(temp & 0xFF);		// LSB
+	HouseKeepingPacket[9]  = (uint8_t)(temp >> 8);			// MSB
 
 	/* HOUSE KEEPING DATA  -----------------------------------------------------*/
 	// Battery Voltage
-	temp = (uint16_t)(HouseKeeping[0]*BATTERY_TO_INT);
-	HouseKeepingPacket[17]  = (uint8_t)(temp & 0xFF);		// LSB
-	HouseKeepingPacket[18]  = (uint8_t)(temp >> 8);			// MSB
+	temp = (int16_t)(HK_Data[0]*100.0f);
+	HouseKeepingPacket[10]  = (uint8_t)(temp & 0xFF);		// LSB
+	HouseKeepingPacket[11]  = (uint8_t)(temp >> 8);			// MSB
 
 	// Temperature
-	HouseKeepingPacket[19] = 1+50;
+	HouseKeepingPacket[12] = (uint8_t)(HK_Data[1]*TEMP_TO_INT);
+
+    /* STATUS  -----------------------------------------------------*/
+    HouseKeepingPacket[13] = (uint8_t)HK_Data[2];
+
+	/* GPS  -----------------------------------------------------*/
+	// LAT
+	temp = (int16_t)(GPS[0]*LAT_TO_INT);
+	HouseKeepingPacket[14]  = (uint8_t)(temp & 0xFF);		// LSB
+	HouseKeepingPacket[15]  = (uint8_t)(temp >> 8);			// MSB
+	HouseKeepingPacket[16]  = 0;							// MSB
+	HouseKeepingPacket[17]  = 0;							// MSB
+
+	// LONG
+	temp = (int16_t)(GPS[1]*LON_TO_INT);
+	HouseKeepingPacket[18]  = (uint8_t)(temp & 0xFF);		// LSB
+	HouseKeepingPacket[19]  = (uint8_t)(temp >> 8);			// MSB
+	HouseKeepingPacket[20]  = 0;							// MSB
+	HouseKeepingPacket[21]  = 0;							// MSB
 
     // CRC -----------------------------------------*/
-    uint16_t CRC = CRC16_CCITT(HouseKeepingPacket, HOUSEKEEPING_PACKET_SIZE - 2);		// Calculate CRC for this message
-    HouseKeepingPacket[20] = (uint8_t)(CRC & 0xFF); 								// LSB
-    HouseKeepingPacket[21] = (uint8_t)(CRC >> 8);									// MSB
+    uint16_t CRC = CRC16_CCITT(HouseKeepingPacket, HOUSEKEEPING_PACKET_SIZE - 2);	// Calculate CRC for this message [full message - itself]
+    HouseKeepingPacket[22] = (uint8_t)(CRC & 0xFF); 								// LSB
+    HouseKeepingPacket[23] = (uint8_t)(CRC >> 8);									// MSB
 }
 
 // ======================================================= ENCODE PACKETS TO BE SENT ==================================================//
@@ -190,18 +188,18 @@ void EncodeFakePacket(int16_t ADCData, uint8_t* DataPacket)
 
 //============================================================== DECODE PACKETS ================================================================//
 /* Decode Control message and update Setpoints */
-void Decode_ControlPacket(uint8_t* ControlPacket, float* AttSetpoints)
+void Decode_CommandPacket(uint8_t* CommandPacket, float* AttSetpoints)
 {
     int16_t temp;
 
     /* ATTITUDE Setpoint (Row, Pich, Yaw) ---------------------------------------------------------------------------*/
-    temp = ( (int16_t)ControlPacket[5] << 8 ) | ControlPacket[4];    	// Unites LSB and MSB
+    temp = ( (int16_t)CommandPacket[5] << 8 ) | CommandPacket[4];    	// Unites LSB and MSB
     AttSetpoints[0] = (float)temp*INT_TO_ATT2;                    		// 16bit int to float
 
-    temp = ( (int16_t)ControlPacket[7] << 8 ) | ControlPacket[6];     	// Unites LSB and MSB
+    temp = ( (int16_t)CommandPacket[7] << 8 ) | CommandPacket[6];     	// Unites LSB and MSB
     AttSetpoints[1] = (float)temp*INT_TO_ATT2;                     		// 16bit int to float
 
-    temp = ( (int16_t)ControlPacket[9] << 8 ) | ControlPacket[8];      	// Unites LSB and MSB
-    AttSetpoints[2] = (float)temp*INT_TO_ATT2;                      		// 16bit int to float
+    temp = ( (int16_t)CommandPacket[9] << 8 ) | CommandPacket[8];      	// Unites LSB and MSB
+    AttSetpoints[2] = (float)temp*INT_TO_ATT2;                      	// 16bit int to float
 }
 

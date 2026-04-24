@@ -1,0 +1,9 @@
+Buffer2
+DutyC
+Att_Setpoint
+HouseKeepingPacket
+TelemetryPacket
+HK_Data
+CommandPacket
+Actual_CRC
+Msg_CRC
