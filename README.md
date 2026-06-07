@@ -1,4 +1,4 @@
-<h1 align="center"> ODYSSEY-CubeSat</h1>
+<h1 align="center"> ODYSSEY-CUBESAT</h1>
 
 <p align="center">
   Flight Software for the ODYSSEY 2U CubeSat Prototype
