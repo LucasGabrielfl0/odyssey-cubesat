@@ -84,7 +84,8 @@ Contains slow‑varying engineering data.
 | 4 | Mode | 1 | 0–255 | — | — |
 
 
-## Project Repositories
+
+## 🔗 Project Repositories
 Here are the links for all the other repositores within this project
 | Repository | Description |
 |------------|-------------|
