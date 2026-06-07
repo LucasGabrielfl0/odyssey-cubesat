@@ -4,7 +4,7 @@
   Flight Software for the ODYSSEY 2U CubeSat Prototype
 </p>
 
-FIGUES / FIGURES: VIDEO OF THE CONTROL
+[PCBS MONTADAS / CUBESAT MONTADO]
 
 
 ## Flight Software
@@ -42,7 +42,7 @@ blablabal, explain the system
 The ADCS uses a 3‑axis reaction wheel assembly to control roll, pitch, and yaw.
 Orientation is sampled at 100 Hz, and a proportional controller adjusts wheel speeds accordingly.
 
-[VIDEO]
+[VIDEO CONTROLE]
 
 ## Telemetry, Tracking and Command (TT&C)
 The TT&C subsystem provides a bidirectional LoRa link between the CubeSat and the ground station, enabling real‑time telemetry and command updates. The satellite transmits attitude and housekeeping data while receiving setpoints and mode changes from the base. All communication follows a custom packet frame with CRC validation for reliability.
