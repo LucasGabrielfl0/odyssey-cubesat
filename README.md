@@ -4,7 +4,7 @@
   Flight Software for the ODYSSEY 2U CubeSat Prototype
 </p>
 
-FIGUES / FIGURES
+FIGUES / FIGURES: VIDEO OF THE CONTROL
 
 
 # Flight Software
@@ -30,8 +30,7 @@ blablabal
 blablabla
 
 ## Other Repositories in this Project
-blablabal, explain the system
-
+Here are the links for all the other repositores within this project
 | Repository | Description |
 |------------|-------------|
 | [ODYSSEY-Hardware](https://github.com/LucasGabrielfl0/Cubesat-Hardware) | PCB designs, schematics, manufacturing files, and mechanical structure. |
