@@ -3,8 +3,8 @@
 <p align="center">
   Flight Software for the ODYSSEY 2U CubeSat Prototype
 </p>
-
-[PCBS MONTADAS / CUBESAT MONTADO]
+<img width="416" height="397" alt="Image" src="https://github.com/user-attachments/assets/52a436fa-80e4-46f5-ae13-e0d939efd464" />
+<img width="556" height="762" alt="Image" src="https://github.com/user-attachments/assets/a1a89f78-60b3-445f-b946-fd0565dca2b1" />
 
 
 ## Flight Software
