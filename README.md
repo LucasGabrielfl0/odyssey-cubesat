@@ -1,7 +1,7 @@
 <h1 align="center"> ODYSSEY-CUBESAT</h1>
 
 <p align="center">
-  Flight Software for the ODYSSEY 2U CubeSat Prototype
+  Flight Software for the ODYSSEY, a 2U CubeSat Prototype
 </p>
 <p align="center">
 <img width="506" height="700" alt="Image" src="https://github.com/user-attachments/assets/a1a89f78-60b3-445f-b946-fd0565dca2b1" />
