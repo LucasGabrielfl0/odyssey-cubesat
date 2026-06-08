@@ -94,7 +94,7 @@ Contains slow‑varying engineering data.
 Here are the links for all the other repositores within this project
 | Repository | Description |
 |------------|-------------|
-| [ODYSSEY-Hardware](https://github.com/LucasGabrielfl0/Cubesat-Hardware) | PCB designs, schematics, manufacturing files, and mechanical structure. |
+| [ODYSSEY-Hardware](https://github.com/LucasGabrielfl0/odyssey-hardware) | PCB designs, schematics, manufacturing files, and mechanical structure. |
 | [ATLAS-GroundStation](https://github.com/LucasGabrielfl0/Cubesat-GroundStation) | Embedded software responsible for communication with the satellite. |
 | [ATLAS-Dashboard](https://github.com/LucasGabrielfl0/Cubesat-Dashboard) | Desktop interface for telemetry visualization and command transmission. |
 
