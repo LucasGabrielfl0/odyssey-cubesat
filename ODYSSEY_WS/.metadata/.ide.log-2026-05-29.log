@@ -1,0 +1,163 @@
+2026-05-30 00:02:23,122 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:02:23,574 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:02:23,577 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:02:23,577 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:02:24,422 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:02:24,423 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:02:24,425 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:02:24,426 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:28,791 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:28,831 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:28,835 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:28,836 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:29,454 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:29,456 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:29,981 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:29,983 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:36,718 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:36,720 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:36,721 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:36,722 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:36,868 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:36,868 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:37,009 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:37,010 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:55,307 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:55,308 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:55,308 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:55,309 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:55,450 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:55,451 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:55,584 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:55,584 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:58,995 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:58,995 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:58,996 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:58,996 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:59,169 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:59,169 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:59,304 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:04:59,304 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:05:24,069 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2026-05-30 00:05:32,767 [INFO] NvicIntPanel:101 - NVIC parent = com.st.microxplorer.plugins.ip.nvic.MultiNvicIntPanel[,0,0,0x0,invalid,layout=javax.swing.BoxLayout,alignmentX=0.0,alignmentY=0.0,border=,flags=9,maximumSize=,minimumSize=,preferredSize=]
+2026-05-30 00:06:05,376 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 933189624 Bytes (1073741824)
+2026-05-30 00:06:08,731 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 954268584 Bytes (1073741824)
+2026-05-30 00:06:17,225 [INFO] UtilMem:75 - End SaveConfig() Used Memory: 694600608 Bytes (1073741824)
+2026-05-30 00:06:30,855 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: NVIC
+2026-05-30 00:06:30,855 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: FREERTOS
+2026-05-30 00:06:30,855 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: USART
+2026-05-30 00:06:30,856 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: USART
+2026-05-30 00:06:30,856 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: DMA
+2026-05-30 00:06:30,856 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2026-05-30 00:06:30,856 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2026-05-30 00:06:30,856 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2026-05-30 00:06:30,856 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: TIM1_8
+2026-05-30 00:06:30,856 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: SYS
+2026-05-30 00:06:30,857 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: GPIO
+2026-05-30 00:06:30,857 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: ADC
+2026-05-30 00:06:30,857 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: RCC
+2026-05-30 00:06:30,857 [INFO] BlockDiagram:2775 - set Specific Code input for plugin: I2C
+2026-05-30 00:06:30,862 [INFO] CodeGenerator:892 - code generatio: config db path: C:\ST\STM32CubeIDE_1.19.0\STM32CubeIDE\plugins\com.st.stm32cube.common.mx_6.15.0.202507011659\\db\
+2026-05-30 00:06:30,893 [WARN] IP:2250 - I2C_Coeff_DF not found: check if there is a RefParameter without a condition.
+2026-05-30 00:06:30,894 [WARN] IP:2250 - Analog_Filter not found: check if there is a RefParameter without a condition.
+2026-05-30 00:06:31,490 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\license.tmp_save
+2026-05-30 00:06:32,584 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\license.tmp
+2026-05-30 00:06:32,876 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\gpio.c_save
+2026-05-30 00:06:33,516 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\gpio.c
+2026-05-30 00:06:33,542 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\gpio.h_save
+2026-05-30 00:06:33,806 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\gpio.h
+2026-05-30 00:06:36,157 [INFO] Middleware:1452 - No code input for Bsp Dependency
+2026-05-30 00:06:36,182 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_inc.tmp_save
+2026-05-30 00:06:36,478 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_inc.tmp
+2026-05-30 00:06:36,540 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_kernelInit.tmp_save
+2026-05-30 00:06:36,773 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_kernelInit.tmp
+2026-05-30 00:06:36,806 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_kernelStart.tmp_save
+2026-05-30 00:06:37,053 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_kernelStart.tmp
+2026-05-30 00:06:37,089 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_typedefs.tmp_save
+2026-05-30 00:06:37,318 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_typedefs.tmp
+2026-05-30 00:06:37,337 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_vars.tmp_save
+2026-05-30 00:06:37,619 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_vars.tmp
+2026-05-30 00:06:37,662 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_pfp.tmp_save
+2026-05-30 00:06:37,866 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_pfp.tmp
+2026-05-30 00:06:37,899 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_obj_creat.tmp_save
+2026-05-30 00:06:38,091 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_obj_creat.tmp
+2026-05-30 00:06:38,164 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_default_thread.tmp_save
+2026-05-30 00:06:38,397 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_default_thread.tmp
+2026-05-30 00:06:38,431 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_threads.tmp_save
+2026-05-30 00:06:38,586 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_threads.tmp
+2026-05-30 00:06:38,671 [INFO] Middleware:1452 - No code input for Bsp Dependency
+2026-05-30 00:06:38,697 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_inc.tmp_save
+2026-05-30 00:06:38,933 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_inc.tmp
+2026-05-30 00:06:38,953 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_kernelInit.tmp_save
+2026-05-30 00:06:39,094 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_kernelInit.tmp
+2026-05-30 00:06:39,115 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_kernelStart.tmp_save
+2026-05-30 00:06:39,295 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_kernelStart.tmp
+2026-05-30 00:06:39,315 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_typedefs.tmp_save
+2026-05-30 00:06:39,458 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_typedefs.tmp
+2026-05-30 00:06:39,477 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_vars.tmp_save
+2026-05-30 00:06:39,647 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_vars.tmp
+2026-05-30 00:06:39,665 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_pfp.tmp_save
+2026-05-30 00:06:39,803 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_pfp.tmp
+2026-05-30 00:06:39,821 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_obj_creat.tmp_save
+2026-05-30 00:06:39,994 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_obj_creat.tmp
+2026-05-30 00:06:40,013 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_default_thread.tmp_save
+2026-05-30 00:06:40,153 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_default_thread.tmp
+2026-05-30 00:06:40,174 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_threads.tmp_save
+2026-05-30 00:06:40,332 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\rtos_threads.tmp
+2026-05-30 00:06:40,395 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\FreeRTOSConfig.h_save
+2026-05-30 00:06:40,755 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\FreeRTOSConfig.h
+2026-05-30 00:06:40,775 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\freertos.c_save
+2026-05-30 00:06:41,063 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\freertos.c
+2026-05-30 00:06:41,150 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\adc.c_save
+2026-05-30 00:06:41,693 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\adc.c
+2026-05-30 00:06:41,729 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\adc.h_save
+2026-05-30 00:06:41,972 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\adc.h
+2026-05-30 00:06:42,158 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\dma.c_save
+2026-05-30 00:06:42,502 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\dma.c
+2026-05-30 00:06:42,527 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\dma.h_save
+2026-05-30 00:06:42,738 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\dma.h
+2026-05-30 00:06:42,774 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\i2c.c_save
+2026-05-30 00:06:43,218 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\i2c.c
+2026-05-30 00:06:43,242 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\i2c.h_save
+2026-05-30 00:06:43,455 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\i2c.h
+2026-05-30 00:06:43,491 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\tim.c_save
+2026-05-30 00:06:43,969 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\tim.c
+2026-05-30 00:06:43,991 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\tim.h_save
+2026-05-30 00:06:44,243 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\tim.h
+2026-05-30 00:06:44,289 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\usart.c_save
+2026-05-30 00:06:44,691 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\usart.c
+2026-05-30 00:06:44,723 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\usart.h_save
+2026-05-30 00:06:44,970 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\usart.h
+2026-05-30 00:06:45,025 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\stm32f4xx_it.c_save
+2026-05-30 00:06:45,547 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\stm32f4xx_it.c
+2026-05-30 00:06:45,581 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\stm32f4xx_it.h_save
+2026-05-30 00:06:45,788 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\stm32f4xx_it.h
+2026-05-30 00:06:45,850 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\stm32f4xx_hal_msp.c_save
+2026-05-30 00:06:46,293 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\stm32f4xx_hal_msp.c
+2026-05-30 00:06:46,360 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\system.tmp_save
+2026-05-30 00:06:46,576 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\MXTmpFiles\system.tmp
+2026-05-30 00:06:46,619 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\stm32f4xx_hal_timebase_tim.c_save
+2026-05-30 00:06:46,882 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\stm32f4xx_hal_timebase_tim.c
+2026-05-30 00:06:46,947 [INFO] CodeEngine:321 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\stm32f4xx_hal_conf.h_save
+2026-05-30 00:06:47,285 [INFO] CodeEngine:345 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\stm32f4xx_hal_conf.h
+2026-05-30 00:06:47,402 [INFO] ApiDbMcu:532 - Load IP Config File for ADC1
+2026-05-30 00:06:47,412 [INFO] ApiDbMcu:532 - Load IP Config File for I2C1
+2026-05-30 00:06:47,437 [INFO] ApiDbMcu:532 - Load IP Config File for TIM1
+2026-05-30 00:06:47,465 [INFO] ApiDbMcu:532 - Load IP Config File for TIM2
+2026-05-30 00:06:47,485 [INFO] ApiDbMcu:532 - Load IP Config File for TIM3
+2026-05-30 00:06:47,505 [INFO] ApiDbMcu:532 - Load IP Config File for TIM4
+2026-05-30 00:06:47,510 [INFO] ApiDbMcu:532 - Load IP Config File for USART1
+2026-05-30 00:06:47,515 [INFO] ApiDbMcu:532 - Load IP Config File for USART2
+2026-05-30 00:06:47,521 [INFO] ApiDbMcu:532 - Load IP Config File for RCC
+2026-05-30 00:06:47,596 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\main.h_save
+2026-05-30 00:06:48,034 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Inc\main.h
+2026-05-30 00:06:48,059 [INFO] CodeEngine:265 - oldGeneratedFile, C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\main.c_save
+2026-05-30 00:06:48,445 [INFO] CodeEngine:289 - Generated code: C:\Users\lucas\OneDrive\Desktop\Cubesat\A0-GITHUB\Cubesat-ODYSSEY\ODYSSEY_WS\ODYSSEY_Cubesat\Core\Src\main.c
+2026-05-30 00:06:50,227 [INFO] ProjectBuilder:3606 - Time for Copy HAL[1] : 1182mS.
+2026-05-30 00:06:50,256 [INFO] ProjectBuilder:5216 - Project Generator version: 4.7.0-B52
+2026-05-30 00:06:50,513 [INFO] ConfigFileManager:1595 - The Die is : DIE431
+2026-05-30 00:06:50,553 [INFO] ApiDbMcu:532 - Load IP Config File for FATFS
+2026-05-30 00:06:50,582 [INFO] ApiDbMcu:532 - Load IP Config File for LIBJPEG
+2026-05-30 00:06:50,625 [INFO] ApiDbMcu:532 - Load IP Config File for MBEDTLS
+2026-05-30 00:06:50,667 [INFO] ApiDbMcu:532 - Load IP Config File for USB_DEVICE
+2026-05-30 00:06:50,696 [INFO] ApiDbMcu:532 - Load IP Config File for USB_HOST

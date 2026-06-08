@@ -1,4 +1,4 @@
-Buffer2
+Att_Euler
 DutyC
 Att_Setpoint
 HouseKeepingPacket
@@ -7,3 +7,4 @@ HK_Data
 CommandPacket
 Actual_CRC
 Msg_CRC
+TIM2

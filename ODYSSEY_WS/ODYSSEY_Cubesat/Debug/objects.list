@@ -4,6 +4,7 @@
 "./Core/Src/GPS_NEO6M.o"
 "./Core/Src/IMU.o"
 "./Core/Src/MPU6050.o"
+"./Core/Src/PID_Control.o"
 "./Core/Src/Telemetry.o"
 "./Core/Src/adc.o"
 "./Core/Src/dma.o"

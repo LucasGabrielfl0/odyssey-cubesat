@@ -105,6 +105,8 @@ void Encode_TelemetryPacket(uint8_t* TelemetryPacket, uint8_t* IMU_Buffer, uint8
 void Encode_HouseKeepingPacket(uint8_t* HouseKeepingPacket, float* AttSetpoint, float* HK_Data, float* GPS)
 {
 	int16_t temp;
+	uint16_t temp2;
+
 	// *------------------------------ PACK DATA -----------------------------//
 	// Sync
     HouseKeepingPacket[0] = START_BYTE1;
@@ -126,9 +128,9 @@ void Encode_HouseKeepingPacket(uint8_t* HouseKeepingPacket, float* AttSetpoint, 
 	HouseKeepingPacket[7]  = (uint8_t)(temp >> 8);			// MSB
 
 	// Yaw
-	temp = (int16_t)(AttSetpoint[2]*100.0f);
-	HouseKeepingPacket[8]  = (uint8_t)(temp & 0xFF);		// LSB
-	HouseKeepingPacket[9]  = (uint8_t)(temp >> 8);			// MSB
+	temp2 = (uint16_t)(AttSetpoint[2]*100.0f);
+	HouseKeepingPacket[8]  = (uint8_t)(temp2 & 0xFF);		// LSB
+	HouseKeepingPacket[9]  = (uint8_t)(temp2 >> 8);			// MSB
 
 	/* HOUSE KEEPING DATA  -----------------------------------------------------*/
 	// Battery Voltage
@@ -191,6 +193,7 @@ void EncodeFakePacket(int16_t ADCData, uint8_t* DataPacket)
 void Decode_CommandPacket(uint8_t* CommandPacket, float* AttSetpoints)
 {
     int16_t temp;
+    uint16_t temp2;
 
     /* ATTITUDE Setpoint (Row, Pich, Yaw) ---------------------------------------------------------------------------*/
     temp = ( (int16_t)CommandPacket[5] << 8 ) | CommandPacket[4];    	// Unites LSB and MSB
@@ -199,7 +202,7 @@ void Decode_CommandPacket(uint8_t* CommandPacket, float* AttSetpoints)
     temp = ( (int16_t)CommandPacket[7] << 8 ) | CommandPacket[6];     	// Unites LSB and MSB
     AttSetpoints[1] = (float)temp*INT_TO_ATT2;                     		// 16bit int to float
 
-    temp = ( (int16_t)CommandPacket[9] << 8 ) | CommandPacket[8];      	// Unites LSB and MSB
-    AttSetpoints[2] = (float)temp*INT_TO_ATT2;                      	// 16bit int to float
+    temp2 = ( (uint16_t)CommandPacket[9] << 8 ) | CommandPacket[8];      	// Unites LSB and MSB
+    AttSetpoints[2] = (float)temp2*INT_TO_ATT2;                      	// 16bit int to float
 }
 

@@ -3,6 +3,13 @@
 	<item key="hasShownOverlayPopupBefore" value="true"/>
 	<item key="replaceBarOpen" value="false"/>
 	<list key="searchhistory">
+		<item value="MAX_COUNTER_PWM"/>
+		<item value="bno055"/>
+		<item value="att_Setpoint"/>
+		<item value="AttitudeControl_ISR"/>
+		<item value="control"/>
+		<item value="HAL_TIM"/>
+		<item value="BatteryVolt"/>
 		<item value="actual"/>
 		<item value="CommandPacket"/>
 		<item value="HK_Data"/>
@@ -11,7 +18,5 @@
 		<item value="Control"/>
 		<item value="isr "/>
 		<item value="isr"/>
-		<item value="COntrol_isr"/>
-		<item value="buffer2"/>
 	</list>
 </section>

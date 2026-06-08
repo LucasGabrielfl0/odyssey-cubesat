@@ -18,13 +18,21 @@
 
 #define IMU_BUFFER_LEN		24				// Euler + Acc + Mag+ Gyro = 3x2 * 4 = 24
 #define IMU_PACKED_LEN		18				// Acc (6), Gyro (6), Euler (6)
-#define EULER_TOTAL_BYTES	6 //
+#define EULER_TOTAL_BYTES	6 				//
 
+//
+#define MAX_TIMEOUT_MS		3				//
 /* =============================================== PROTOTYPES =============================================== */
 HAL_StatusTypeDef BNO055_Init(I2C_HandleTypeDef *hi2c);
-//void BNO055_ReadIMU(I2C_HandleTypeDef *hi2c, uint8_t* IMU_Data);
-void BNO055_ReadIMU(I2C_HandleTypeDef *hi2c, uint8_t* IMU_Data);
-void BNO055_ReadEuler(I2C_HandleTypeDef *hi2c, float* Att);
+HAL_StatusTypeDef BNO055_ReadIMU     ( I2C_HandleTypeDef *hi2c, float* Att, uint8_t* IMU_Data);
+
+// DMA
+HAL_StatusTypeDef BNO055_StartRead_DMA (I2C_HandleTypeDef *hi2c, uint8_t* IMU_Buffer);
+HAL_StatusTypeDef BNO055_FinishRead_DMA(I2C_HandleTypeDef *hi2c, uint8_t* IMU_Buffer, float* Att, uint8_t* IMU_Data);
+
+void BNO055_I2C_Reset   (I2C_HandleTypeDef *hi2c);
+void BNO055_ReadIMU_Raw ( I2C_HandleTypeDef *hi2c, uint8_t* IMU_Data);
+void BNO055_ReadEuler   ( I2C_HandleTypeDef *hi2c, float* Att);
 
 // DEBUG
 void BNO055_ReadIMU_DEBUG(I2C_HandleTypeDef *hi2c, float* Acc, float* Gyro, float* AttEuler);

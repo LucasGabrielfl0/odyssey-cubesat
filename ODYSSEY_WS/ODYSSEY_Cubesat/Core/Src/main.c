@@ -30,13 +30,15 @@
 /* USER CODE BEGIN Includes */
 #include "BNO055.h"				// IMU Sensor
 #include "Telemetry.h"			// Telemetry Protocol, how to Pack and Unpack data Cubesat <--> Ground Station
-//#include "E220_900T22D.h"
-//#include "GPS_NEO6M.h"	// GPS NEO6M
+//#include "GPS_NEO6M.h"		// GPS NEO6M
 
 // FreeRTOS
 #include "FreeRTOS.h"
 #include "task.h"
 #include "semphr.h"
+
+// Others
+#include <stdlib.h>
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -48,22 +50,32 @@
 /* =================== =================== CONTROL SYSTEM =======================================*/
 #define MAX_COUNTER_PWM 	4000					// Max number that the PWM register can count up to
 
+#define ATT_ERROR_LIMIT		20						// Maximum acceptable error for control loop in degrees
+
+#define KP_ROW				4000.0f/90.0f			//
+#define KP_PITCH			4000.0f/180.0f			//
+#define KP_YAW				4000.0f/180.0f			//
+
 /* ======================================= HOUSE KEEPING =========================================*/
-#define ADC_TO_BATT			(10.305f/4095.0f)		// Assuming 2.68V == 8.4V (Voltage Div. 47k + 100k) => therefore 3.3V == 10.32V
-#define ADC_TO_TEMP			(3.3f/4095.0f)*100.0f	// 12bit_to_Volt * Volt_to_Degree (LM35DZ, range 0 to 100°C)
+#define VOLT_DIV			( 4.73f / (4.73f + 9.97f)    )			// Voltage Divider Gain (fine tuned)
+#define ADC_TO_BATT			( 3.3f  / (4095.0f*VOLT_DIV) )		// Vbat(Raw_adc)
+#define ADC_TO_TEMP			( 3.3f/4095.0f)*100.0f				// 12bit_to_Volt * Volt_to_Degree (LM35DZ, range 0 to 100°C)
 
 /* ======================================= LED's =================================================*/
 #define FAULT_LED_PORT		GPIOC
-#define FAULT_LED_PIN		GPIO_PIN_15
+#define FAULT_LED_PIN		GPIO_PIN_14
+
+#define STATUS_LED_PORT		GPIOC
+#define STATUS_LED_PIN		GPIO_PIN_15
 
 /* ======================================= LORA ====================================================*/
-#define LORA_M0_PIN			GPIO_PIN_0				// Config PIN, Digital Output Pin
+#define LORA_M0_PIN			GPIO_PIN_6				// Config PIN, Digital Output Pin
 #define LORA_M0_PORT		GPIOA					// Port
 
-#define LORA_M1_PIN			GPIO_PIN_1				// Config Pin, Digital Output Pin
+#define LORA_M1_PIN			GPIO_PIN_5				// Config Pin, Digital Output Pin
 #define LORA_M1_PORT		GPIOA					// Port
 
-#define LORA_AUX_PIN		GPIO_PIN_4				// Flag pin, Digital Input Pin [1: Idle , 0:Message being received]
+#define LORA_AUX_PIN		GPIO_PIN_1				// Flag pin, Digital Input Pin [1: Idle , 0:Message being received]
 #define LORA_AUX_PORT		GPIOA					// Port
 
 /* USER CODE END PD */
@@ -77,13 +89,13 @@
 /* USER CODE BEGIN PV */
 /*============================================ CONTROL SYSTEM ==========================================*/
 // Control Signal (Duty Cycle)
-uint16_t DutyC[3]  	   =  {0, 0, 0};				// Duty Cycle as an int, to Control PWM reg
-float    u_DutyC[3]    =  {0, 0 ,0}; 				// Controller Output, float PWM value [0,  max count]
+int16_t DutyC[3]  	   =  {0, 0, 0};				// Duty Cycle as an int, to Control PWM reg
+float   u_DutyC[3]     =  {0, 0 ,0}; 				// Controller Output, float PWM value [0,  max count]
 
 // Attitude [Row, Pitch, Yaw]
-float AttEuler[3] 		= {0, 0, 0};				// Current orientation in degreees
-float Att_Setpoint[3]  	= {0, 0, 0};				// Current Setpoint in degreers
-float Att_Error[3]		= {0, 0, 0};				// Error in Degrees
+float Att_Euler[3] 		= {0, 0,   0};				// Current orientation in degreees
+float Att_Setpoint[3]  	= {0, 0, 180};				// Current Setpoint in degreers
+float Att_Error[3]		= {0, 0,   0};				// Error in Degrees
 
 // Acc and Gyro [mostly for debug]
 float Acc[3]  = {0, 0, 0};							// AccX , AccY , AccZ
@@ -91,10 +103,10 @@ float Gyro[3] = {0, 0, 0};							// GyroX, GyroY, GyroZ
 
 /*===============================================  HOUSE KEEPING ======================================*/
 //
-uint16_t ADC_DMA_Buffer[2]={0,0};
-
-// Time Stamp (Message Counter)
-uint8_t MsgCounter = 0;
+uint16_t ADC_DMA_Buffer[2] 		  = {0,0};			// Updated by DMA, [0]: Raw Battery Voltage, [1]: Raw Temperature
+uint32_t BatteryVolt_Sum 	   	  = 0;				// Sum of the voltage battery reads (in Volts)
+uint8_t  BatteryVolt_SumCounter   = 0;				// Counter of how many samples the avg has (Number of reads)
+uint8_t  MsgCounter         	  = 0;				// Time Stamp (Message Counter)
 
 /*=========================================  TELEMETRY =============================================*/
 // Message Buffers
@@ -108,11 +120,14 @@ float HK_Data[3]	 	= {0};								// House Keeping: Battery, Temp
 float GPS_Data[2]    	= {0};								// Lat, Long and Alt
 
 //CRC
-uint16_t Actual_CRC = 0;
+uint16_t Actual_CRC  = 0;
 uint16_t Msg_CRC	 = 0;
 
 // FreeRTOS
 SemaphoreHandle_t LORA_mutex;
+
+// BNO055
+uint8_t IMU_DMA_Buffer[IMU_BUFFER_LEN]	={0};
 
 /* USER CODE END PV */
 
@@ -122,11 +137,16 @@ void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
 
 /*===================================== CONTROL SYSTEM =====================================*/
-extern void Control_ISR();					// Callback function for the Control Loop
-void ADCS_PWM_Init();						// Start all 6 PWMs
+void AttitudeControl_ISR();												// Callback function for the Control Loop
+void PWM_Init();														// Start all 6 PWMs
+int16_t P_Control(float AttEuler, float AttSetpoint, float Kp);			// Proportional Control Algorithm
+void BRAKE_ROLL();
+void BRAKE_PITCH();
+void BRAKE_YAW();
 
 /*====================================== TELEMETRY SYSTEM ====================================*/
-void E220_Init();							// Blocks Until LoRa has Initialized
+void E220_Init();														// Blocks Until LoRa has Initialized
+//void ATTITUDE_CONTROL_ISR();
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -177,22 +197,27 @@ int main(void)
   while(BNO055_Init(&hi2c1) != HAL_OK)
   {
 	  HAL_GPIO_TogglePin(FAULT_LED_PORT, FAULT_LED_PIN);
-	  HAL_Delay(50);
+	  HAL_Delay(10);
   }
   HAL_GPIO_WritePin(FAULT_LED_PORT, FAULT_LED_PIN, RESET);
 
 
   // LORA EBYTE SETUP --------------------------------------------------------------------------------------//
   E220_Init();															// LoRa Config
-  HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);	// Receive command ISR
+//  HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);	// Receive command ISR
+  HAL_UARTEx_ReceiveToIdle_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
+  __HAL_DMA_DISABLE_IT(huart2.hdmarx, DMA_IT_HT);
 
   // CONTROL SYSTEM-----------------------------------------------------------------------------------------//
-//  ADCS_PWM_Init();														// 6 PWM Config
-//  HAL_TIM_Base_Start_IT(&htim3);										// Control ISR
+  PWM_Init();															// 6 PWM Config
+  HAL_TIM_Base_Start_IT(&htim4);										// Control ISR
 
   // ADC SETUP ---------------------------------------------------------------------------------------------//
   // I'm cheating a bit here so i dont get a warning, the data is uint16 but the prototype is only 32bit
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ADC_DMA_Buffer, 2);							// Start DMA to read Bat and Temp
+  HAL_ADC_Start_DMA(&hadc1, (uint32_t*)ADC_DMA_Buffer, 2);				// Start DMA to read Bat and Temp
+
+  // Startup Sucessfull LED:
+  HAL_GPIO_WritePin(STATUS_LED_PORT, STATUS_LED_PIN, SET);
 
   /* USER CODE END 2 */
 
@@ -271,32 +296,39 @@ void E220_Init()
 	HAL_GPIO_WritePin(LORA_M1_PORT, LORA_M1_PIN, RESET);
 
 	// Delay until LoRa module is ready to go
-	while (HAL_GPIO_ReadPin(LORA_AUX_PORT, LORA_AUX_PIN) == GPIO_PIN_RESET)
-	{
-		HAL_GPIO_TogglePin(FAULT_LED_PORT, FAULT_LED_PIN);
-		HAL_Delay(50);
-	}
+//	while (HAL_GPIO_ReadPin(LORA_AUX_PORT, LORA_AUX_PIN) == GPIO_PIN_RESET)
+//	{
+//		HAL_GPIO_TogglePin(FAULT_LED_PORT, FAULT_LED_PIN);
+//		HAL_Delay(10);
+//	}
 
 	HAL_GPIO_WritePin(FAULT_LED_PORT, FAULT_LED_PIN, RESET);
 }
 
-void ADCS_PWM_Init()
+/* Starts all the Control System PWMs and sets their DutyCycle to 0*/
+void PWM_Init()
 {
 	// Motor 1
-	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);		// M1 CW
-	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);		// M1 CCW
+	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);		// M1 CW
+	HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);		// M1 CCW
+	TIM1->CCR1 	= 0;
+	TIM1->CCR2 	= 0;
 
 	// Motor 2
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);		// M2 CW
-	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);		// M2 CCW
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_3);		// M2 CW
+	HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);		// M2 CCW
+	TIM1->CCR3 	= 0;
+	TIM1->CCR4 	= 0;
 
 	// Motor 3
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_1);		// M3 CCW
-	HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_2);		// M3 CW
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);		// M3 CCW
+	HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_2);		// M3 CW
+	TIM2->CCR1 	= 0;
+	TIM2->CCR2 	= 0;
 
 }
 
-/* ###################################################### TELEMETRY, TRACKING AND COMMAND ############################################# */
+/* ######################################################### TELEMETRY, TRACKING AND COMMAND ############################################# */
 /* Receives only one data packet from the Ground Station:
  * 1. Control Command, with Row, Pitch and Yaw Setpoints
  *
@@ -306,40 +338,46 @@ void ADCS_PWM_Init()
  */
 /* ======================================================= TT&C: RECEIVE COMMAND ==================================================== */
 /* Callback Function Every Time the LORA radio receives a full message */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+void HAL_UARTEx_RxEventCallback(UART_HandleTypeDef *huart, uint16_t Size)
 {
 
+	// =========================== LORA E220 UART CALLBACK ============================ //
 	if(huart->Instance == USART2)
 	{
-		DutyC[1]++;
-		if(DutyC[1] > 1000) { DutyC[1] = 0; }
+		// If it doesnt have a full message, ignores it
+        if (Size < COMMAND_PACKET_SIZE)
+        {
+    		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
+            __HAL_DMA_DISABLE_IT(huart2.hdmarx, DMA_IT_HT);
+    		return;
+        }
 
-		// Check Begining of the message
+		// Check the Start Bytes [for Sync]
 		if(CommandPacket[0] != START_BYTE1 || CommandPacket[1] != START_BYTE2)
 		{
-			HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
-			return;
+    		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
+            __HAL_DMA_DISABLE_IT(huart2.hdmarx, DMA_IT_HT);
+    		return;
 		}
 
-        // CYCLIC REDUNDANCY CHECK --------------------------------------------------//
-    	// Calculate CRC (Not very lightweight but ces't la vie)
+        // CYCLIC REDUNDANCY CHECK ------------------------------------------------------------------------------------------------------------//
 		Msg_CRC 	= ( (uint16_t)CommandPacket[COMMAND_PACKET_SIZE-1] << 8 ) |  ( (uint16_t)CommandPacket[COMMAND_PACKET_SIZE-2] );
     	Actual_CRC = CRC16_CCITT(CommandPacket, COMMAND_PACKET_SIZE - 2);
 
     	// If the message is corrupted, ignores it
     	if(Actual_CRC != Msg_CRC)
 		{
-			HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
-			return;
+    		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
+            __HAL_DMA_DISABLE_IT(huart2.hdmarx, DMA_IT_HT);
+    		return;
 		}
 
-    	// Decode packet and Reactivate the DMA ISR
-        Decode_CommandPacket(CommandPacket, Att_Setpoint); 						// Very Lightweight and not often called
-    	HAL_UART_Receive_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
+        // DECODE PACKET AND REACTIVATE DMA ISR -----------------------------------------------------------------------------------------------//
+    	Decode_CommandPacket(CommandPacket, Att_Setpoint); 						// Very Lightweight and not often called
+		HAL_UARTEx_ReceiveToIdle_DMA(&huart2, CommandPacket, COMMAND_PACKET_SIZE);
+    	__HAL_DMA_DISABLE_IT(huart2.hdmarx, DMA_IT_HT);
 	}
-
 }
-
 
 /* ================================================= TT&C: SEND TELEMETRY DATA  ==================================================== */
 /* Sends the data to Ground Station via radio Module every 100ms*/
@@ -348,7 +386,11 @@ void Send_to_GroundStation_Telemetry(void *argument)
 	while(1)
 	{
 		// IMU ----------------------------------------------------------------------------------------------- //
-		BNO055_ReadIMU(&hi2c1, IMU_Data);
+//		BNO055_ReadIMU_Raw(&hi2c1, IMU_Data);
+
+		// Calculates average for the battery voltage
+		BatteryVolt_Sum += (uint32_t)ADC_DMA_Buffer[0];		// Raw Voltage sum
+		BatteryVolt_SumCounter++;							// Sample Counter
 
 		// Message Counter [0 - 255]
 		MsgCounter++;
@@ -358,7 +400,8 @@ void Send_to_GroundStation_Telemetry(void *argument)
 
 		// SEND PACKET TO RADIO ----------------------------------------------------------------------------- //
 		xSemaphoreTake(LORA_mutex, portMAX_DELAY);
-		HAL_UART_Transmit(&huart2, TelemetryPacket, sizeof(TelemetryPacket), HAL_MAX_DELAY);
+//		HAL_UART_Transmit(&huart2, TelemetryPacket, TELEMETRY_PACKET_SIZE, HAL_MAX_DELAY);
+		HAL_UART_Transmit_DMA(&huart2, TelemetryPacket, TELEMETRY_PACKET_SIZE);
 		xSemaphoreGive(LORA_mutex);
 
 		// 100ms Delay between consecutive messages
@@ -370,17 +413,19 @@ void Send_to_GroundStation_Telemetry(void *argument)
 /* Sends the data to Ground Station via radio Module every 1s*/
 void Send_to_GroundStation_HouseKeeping(void *argument)
 {
-	uint16_t Temp = 0;
+//	uint16_t Temp = 0;
 	while(1)
 	{
 		// GPS DATA ------------------------------------------------------------------------------- //
-		GPS_Data[0] = 10;		//
-		GPS_Data[1] = 50;		//
+		GPS_Data[0] = 10;										//
+		GPS_Data[1] = 50;										//
 
 		/* HOUSE KEEPING DATA ------------------------------------------------------------------------------- */
 		// Battery Voltage [0 - 8.4V]
-		HK_Data[0] = (float)ADC_DMA_Buffer[0] * ADC_TO_BATT;	// Raw Voltage
-																// Moving Average
+		HK_Data[0] = ADC_TO_BATT* ( (float)BatteryVolt_Sum/(float)BatteryVolt_SumCounter);	// Battery Voltage Average
+		BatteryVolt_Sum 		= 0;														// Clears sum
+		BatteryVolt_SumCounter  = 0; 														// Clears Counter
+
 		// Temperature [0 to 100]
 		HK_Data[1] = (float)ADC_DMA_Buffer[1] * ADC_TO_TEMP;
 
@@ -396,7 +441,8 @@ void Send_to_GroundStation_HouseKeeping(void *argument)
 		vTaskDelay(pdMS_TO_TICKS(20));
 
 		// Transmit message
-		HAL_UART_Transmit(&huart2, HouseKeepingPacket, HOUSEKEEPING_PACKET_SIZE, HAL_MAX_DELAY);
+//		HAL_UART_Transmit(&huart2, HouseKeepingPacket, HOUSEKEEPING_PACKET_SIZE, HAL_MAX_DELAY);
+		HAL_UART_Transmit_DMA(&huart2, HouseKeepingPacket, HOUSEKEEPING_PACKET_SIZE);
 
 		// Holds 20ms before letting another message use Mutex
 		vTaskDelay(pdMS_TO_TICKS(20));
@@ -408,62 +454,140 @@ void Send_to_GroundStation_HouseKeeping(void *argument)
 
 }
 
-/*##################################################### ATT. DETERMINATION AND CONTROL ###################################################*/
+/*######################################################## ATT. DETERMINATION AND CONTROL ###################################################*/
 /* Control System ISR, runs every 10ms
- * Manual Mode: The motor runs proportional to the Setpoint for 5s, then it stops
+ * A unit delay was implemented in software (so the I2C timing and etc doesn't mess the control timing)
  *
  *
- * */
-void Control_ISR()
+ */
+/* Callback Function Every Time the LORA radio receives a full message */
+void AttitudeControl_ISR()
 {
-	// Aux Variables
-	uint8_t Dir[3] = {0,0,0};		// 0 = CW, 1 = CCW;
-	uint16_t TestCounter = 0;		//
+	// =========================== APPLY CONTROL / DIRECTION =================================== //
+	// Roll (X) -------------------------------------------------
+	TIM1->CCR1 = (DutyC[0] > 0) ? (uint32_t) (  DutyC[0] ) : 0;
+	TIM1->CCR2 = (DutyC[0] < 0) ? (uint32_t) ( -DutyC[0] ) : 0;
+	if(DutyC[0] == 0) { BRAKE_ROLL(); }
 
-	//
-	//	DutyC[0]++;
-//	if(DutyC[0] > 1000) { DutyC[0] = 0; }
+	// Pitch (Y) ------------------------------------------------
+	TIM1->CCR3 = (DutyC[1] > 0) ? (uint32_t) (  DutyC[1] ) : 0;
+	TIM1->CCR4 = (DutyC[1] < 0) ? (uint32_t) ( -DutyC[1] ) : 0;
+	if(DutyC[1] == 0) { BRAKE_PITCH(); }
 
-	// Row -----------------
-	if(1<0)
-	{}
-	else
-	{
-		TIM1->CCR1 = 1;
-		DutyC[1] = 1;
-	}
-	/*
-	// ================ Aply Previous Control ================ //
-	TIM1->CCR1 = DutyC[0];			// Control Row   (X axys)
-	TIM1->CCR2 = DutyC[1];			// Control Pitch (Y axys)
-	TIM1->CCR3 = DutyC[2];			// Control Yaw   (Z axys)
-	*/
-	/*
-	// ================ READ IMU ================ //
-	IMU_Quat(&hi2c1, AttQuat, IMU_int16);	// Reads Current Att. (Quaternions)
+	// Yaw (Z) --------------------------------------------------
+	TIM2->CCR1 = (DutyC[2] > 0) ? (uint32_t) (  DutyC[2] ) : 0;
+	TIM2->CCR2 = (DutyC[2] < 0) ? (uint32_t) ( -DutyC[2] ) : 0;
+	if(DutyC[2] == 0) { BRAKE_YAW(); }
 
-	// ======================== CONTROL ALGORITHM ========================  //
-	PD_Control(attQuat[0], qError);
-	PD_Control(attQuat[1], qError);
-	PD_Control(attQuat[2], qError);
+	// ====================================== READ IMU ====================================== //
+	// DMA is non blocking, control continues in the Callback ISR
+	BNO055_StartRead_DMA(&hi2c1, IMU_DMA_Buffer);
+//	if( BNO055_StartRead_DMA(&hi2c1, IMU_DMA_Buffer) != HAL_OK)
+//	{
+//		BNO055_I2C_Reset(&hi2c1);
+//		return;
+//	}
+}
 
-	// SS Control
-	LQR_Control(attQuat, DutyC);
+void BRAKE_ROLL()
+{
+	TIM1->CCR1 = MAX_COUNTER_PWM;
+	TIM1->CCR2 = MAX_COUNTER_PWM;
+}
 
-	// ======================== MAX / MIN VALUES ======================== //
+void BRAKE_PITCH()
+{
+	TIM1->CCR3 = MAX_COUNTER_PWM;
+	TIM1->CCR4 = MAX_COUNTER_PWM;
+}
+
+void BRAKE_YAW()
+{
+	TIM2->CCR1 = MAX_COUNTER_PWM;
+	TIM2->CCR2 = MAX_COUNTER_PWM;
+}
+
+
+/* Reads Attitude and calculates control after DMA finishes reading the BNO055*/
+void AttitudeControl_Callback()
+{
+	// ====================================== READ IMU ====================================== //
+	BNO055_FinishRead_DMA(&hi2c1, IMU_DMA_Buffer, Att_Euler, IMU_Data);
+
+	// ================================= CONTROL ALGORITHM =================================  //
+	DutyC[0] = P_Control(Att_Euler[0], Att_Setpoint[0], KP_ROW);			// Row
+	DutyC[1] = P_Control(Att_Euler[1], Att_Setpoint[1], KP_PITCH);			// Pitch
+	DutyC[2] = P_Control(Att_Euler[2], Att_Setpoint[2], KP_YAW);			// Yaw
+
+	// ================================== MAX / MIN VALUES ================================= //
 	for(int i=0;i<3;i++)
 	{
-		if (DutyC[i] > MAX_COUNTER_PWM) { DutyC[0] = MAX_COUNTER_PWM; }
-		if (DutyC[i] < 0) { DutyC[0] = 0; }
+		if (DutyC[i] >  MAX_COUNTER_PWM) { DutyC[i] =  MAX_COUNTER_PWM; }
+		if (DutyC[i] < -MAX_COUNTER_PWM) { DutyC[i] = -MAX_COUNTER_PWM; }
 	}
-	// ============= DIRECTION ============= //
-	// CW
-
-	// CCW
-
-
-	 */
 }
+
+/* Callback Function Every Time I2C DMA message */
+void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c) {
+    if (hi2c->Instance == I2C1)
+    {
+    	AttitudeControl_Callback();
+    }
+}
+
+/* ================================================= PROPORTIONAL CONTROL ALGORITHM  ==================================================== */
+/* Control algorithm: Proportional Control  */
+int16_t P_Control(float AttEuler, float AttSetpoint, float Kp)
+{
+	float Error_t = 0;
+	float u_pwm   = 0;
+	int16_t DutyC = 0;
+
+	// ======================== CALCULATE ERORR ===================================  //
+	Error_t = AttSetpoint - AttEuler;
+
+	// ======================== CONTROL ALGORITHM ==================================  //
+	u_pwm = Kp*Error_t;
+
+	// ======================== MAX / MIN VALUES ======================== //
+	DutyC = (int16_t)u_pwm;
+	if (DutyC >  MAX_COUNTER_PWM) { DutyC =  MAX_COUNTER_PWM; }
+	if (DutyC < -MAX_COUNTER_PWM) { DutyC = -MAX_COUNTER_PWM; }
+
+	// if DutyC changed signs (Direction Changed), next iteration is 0
+
+	// Ignores errors below certain treshold
+	if (DutyC >= -100 && DutyC<= 100 ) { DutyC = 0;}
+	return DutyC;
+}
+
+
+void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
+{
+    if(hi2c->Instance == I2C1)
+    {
+    	HAL_GPIO_WritePin(STATUS_LED_PORT, STATUS_LED_PIN, RESET);
+//        // 1. Abort any ongoing DMA transfer
+//        HAL_I2C_Master_Abort_IT(hi2c, BNO055_ADDR);
+//
+//        // 2. Reset the peripheral
+//        __HAL_RCC_I2C1_FORCE_RESET();
+//        for(volatile int i = 0; i < 1000; i++);
+//        __HAL_RCC_I2C1_RELEASE_RESET();
+//
+//        // 3. Reinit
+//        HAL_I2C_DeInit(hi2c);
+//        HAL_I2C_Init(hi2c);
+//
+//        // 4. Immediately retry the DMA read
+//        // If this fails too, next TIM4 ISR will retry anyway
+//        BNO055_StartRead_DMA(hi2c, IMU_DMA_Buffer);
+    }
+}
+
+
+
+
 /* USER CODE END 4 */
 
 /**
@@ -477,6 +601,10 @@ void Control_ISR()
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
+  if (htim->Instance == TIM4)
+  {
+	  AttitudeControl_ISR();
+  }
 
   /* USER CODE END Callback 0 */
   if (htim->Instance == TIM5)

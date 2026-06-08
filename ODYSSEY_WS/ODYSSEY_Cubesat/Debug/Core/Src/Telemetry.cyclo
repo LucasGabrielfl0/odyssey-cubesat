@@ -1,4 +1,4 @@
 ../Core/Src/Telemetry.c:43:6:Encode_TelemetryPacket	1
 ../Core/Src/Telemetry.c:105:6:Encode_HouseKeepingPacket	1
-../Core/Src/Telemetry.c:168:6:EncodeFakePacket	2
-../Core/Src/Telemetry.c:191:6:Decode_CommandPacket	1
+../Core/Src/Telemetry.c:170:6:EncodeFakePacket	2
+../Core/Src/Telemetry.c:193:6:Decode_CommandPacket	1
