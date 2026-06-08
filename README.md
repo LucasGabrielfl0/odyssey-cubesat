@@ -3,9 +3,9 @@
 <p align="center">
   Flight Software for the ODYSSEY 2U CubeSat Prototype
 </p>
-<img width="416" height="397" alt="Image" src="https://github.com/user-attachments/assets/52a436fa-80e4-46f5-ae13-e0d939efd464" />
+<p align="center">
 <img width="556" height="762" alt="Image" src="https://github.com/user-attachments/assets/a1a89f78-60b3-445f-b946-fd0565dca2b1" />
-
+</p>
 
 ## Flight Software
 The ODYSSEY is a 2U CubeSat prototype, featuring a full Attitude Determination and Control System (ADCS) in all three axes and a bidirectional telemetry system using LoRa radio.
@@ -21,6 +21,11 @@ This repository contains the embedded firmware running on the STM32F411 microcon
 
 ## System Architecture Overview
 blablabal, explain the system
+
+<p align="center">
+<img width="555" height="530" alt="Image" src="https://github.com/user-attachments/assets/52a436fa-80e4-46f5-ae13-e0d939efd464" />
+</p>
+
 | Subsystem | Component | Model | Function |
 | --- | --- | --- | --- |
 | **On‑Board Computer (OBC)** | Microcontroller | **STM32F411CEU6** | Runs ADCS, TT&C, motor control, task scheduling. |
