@@ -29,7 +29,7 @@ This repository contains the embedded firmware running on the STM32F411 microcon
 
 
 ## System Architecture Overview
-The ODYSSEY CubeSat consists of several subsystems, including the OBC, ADCS, TT&C, and EPS, distributed across three PCBs. The PCBs are shown below, along with a table listing the main components used in each subsystem.
+The ODYSSEY CubeSat consists of several subsystems, including the OBC, ADCS, TT&C, and EPS, distributed across three PCBs. The assembled system is shown below, along with a table listing the main components used in each subsystem.
 
 <p align="center">
 <img width="555" height="530" alt="Image" src="https://github.com/user-attachments/assets/52a436fa-80e4-46f5-ae13-e0d939efd464" />
