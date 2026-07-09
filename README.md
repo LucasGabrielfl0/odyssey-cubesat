@@ -10,6 +10,15 @@
 ## Flight Software
 The ODYSSEY is a 2U CubeSat prototype, featuring a full Attitude Determination and Control System (ADCS) in all three axes and a bidirectional telemetry system using LoRa radio.
 This repository contains the embedded firmware running on the STM32F411 microcontroller.
+<br>
+
+<p align="center">
+  <a href="https://github.com/user-attachments/assets/9f3fd871-63c2-410a-97ac-26dfb783a112">▶ Roll (X) Axis Response</a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/user-attachments/assets/9f3fd871-63c2-410a-97ac-26dfb783a112">▶ Pitch (Y) Axis Response</a>
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href="https://github.com/user-attachments/assets/9f3fd871-63c2-410a-97ac-26dfb783a112">▶ Yaw (Z) Axis Response</a>
+</p>
 
 ## Contents
 
@@ -20,7 +29,7 @@ This repository contains the embedded firmware running on the STM32F411 microcon
 
 
 ## System Architecture Overview
-blablabal, explain the system
+The ODYSSEY CubeSat consists of several subsystems, including the OBC, ADCS, TT&C, and EPS, distributed across three PCBs. The PCBs are shown below, along with a table listing the main components used in each subsystem.
 
 <p align="center">
 <img width="555" height="530" alt="Image" src="https://github.com/user-attachments/assets/52a436fa-80e4-46f5-ae13-e0d939efd464" />
@@ -46,8 +55,6 @@ blablabal, explain the system
 ## Attitude Determination and Control System (ADCS)
 The ADCS uses a 3‑axis reaction wheel assembly to control roll, pitch, and yaw.
 Orientation is sampled at 100 Hz, and a proportional controller adjusts wheel speeds accordingly.
-
-[VIDEO CONTROLE]
 
 ## Telemetry, Tracking and Command (TT&C)
 The TT&C subsystem provides a bidirectional LoRa link between the CubeSat and the ground station, enabling real‑time telemetry and command updates. The satellite transmits attitude and housekeeping data while receiving setpoints and mode changes from the base. All communication follows a custom packet frame with CRC validation for reliability.
