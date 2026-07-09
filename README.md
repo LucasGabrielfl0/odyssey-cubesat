@@ -64,8 +64,8 @@ Packet Structure
 Contains orientation, acceleration, angular velocity, and a message counter.
 | Field | Description | Bytes | Range | Resolution | Unit |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Roll | 2 | −90 to 90 | 0.0625 | ° |
-| 2 | Pitch | 2 | −180 to 180 | 0.0625 | ° |
+| 1 | Roll | 2 | −180 to 180 | 0.0625 | ° |
+| 2 | Pitch | 2 | −90 to 90 | 0.0625 | ° |
 | 3 | Yaw | 2 | 0 to 360 | 0.0625 | ° |
 | 4 | Acc X | 2 | −4000 to 4000 | 1 | mg |
 | 5 | Acc Y | 2 | −4000 to 4000 | 1 | mg |
@@ -79,21 +79,21 @@ Contains orientation, acceleration, angular velocity, and a message counter.
 Contains slow‑varying engineering data.
 | Field | Description | Bytes | Range | Resolution | Unit |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Roll Setpoint | 2 | −90 to 90 | 0.1 | ° |
-| 2 | Pitch Setpoint | 2 | −180 to 180 | 0.1 | ° |
+| 1 | Roll Setpoint | 2 | −180 to 180 | 0.1 | ° |
+| 2 | Pitch Setpoint | 2 | −90 to 90 | 0.1 | ° |
 | 3 | Yaw Setpoint | 2 | 0 to 360 | 0.1 | ° |
-| 4 | Status Byte | 1 | 0–255 | — | — |
-| 5 | Battery Voltage | 2 | 0–8.4 | 0.1 | V |
+| 4 | Status Byte | 1 | 0 to 255 | — | — |
+| 5 | Battery Voltage | 2 | 0 to 8.4 | 0.1 | V |
 | 6 | Temperature | 1 | −10 to 155 | 0.5 | °C |
 
 
 ### 📦 Command Packet (Base → CubeSat)
 | Field | Description | Bytes | Range | Resolution | Unit |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Roll Setpoint | 2 | −90 to 90 | 0.1 | ° |
-| 2 | Pitch Setpoint | 2 | −180 to 180 | 0.1 | ° |
-| 3 | Yaw Setpoint | 2 | 0 to 360 | 0.1 | ° |
-| 4 | Mode | 1 | 0–255 | — | — |
+| 1 | Roll Setpoint | 2 | −180 to 180 | 0.1 | ° |
+| 2 | Pitch Setpoint | 2 | −90 to 90 | 0.1 | ° |
+| 3 | Yaw Setpoint | 2 |  0 to 360 | 0.1 | ° |
+| 4 | Mode | 1 |  0 to255 | — | — |
 
 
 
