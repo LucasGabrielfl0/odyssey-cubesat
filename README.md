@@ -57,8 +57,12 @@ The ADCS uses a 3‑axis reaction wheel assembly to control roll, pitch, and yaw
 Orientation is sampled at 100 Hz, and a proportional controller adjusts wheel speeds accordingly.
 
 ## Telemetry, Tracking and Command (TT&C)
-The TT&C subsystem provides a bidirectional LoRa link between the CubeSat and the ground station, enabling real‑time telemetry and command updates. The satellite transmits attitude and housekeeping data while receiving setpoints and mode changes from the base. All communication follows a custom packet frame with CRC validation for reliability.
-Packet Structure
+The TT&C subsystem provides a bidirectional LoRa link between the CubeSat and the ground station, enabling real‑time telemetry and command updates. The satellite transmits attitude and housekeeping data while receiving setpoints and mode changes from the base. All communication follows a custom packet frame with CRC validation for reliability, as shown below.
+<br>
+
+<p align="center">
+<img width="1591" height="322" alt="Frame_Structure" src="https://github.com/user-attachments/assets/aa30cb8a-fd29-4f24-a329-059622db6f3b" />
+</p>
 
 ### 📦 Attitude Packet (CubeSat → Base, 100 ms)
 Contains orientation, acceleration, angular velocity, and a message counter.
