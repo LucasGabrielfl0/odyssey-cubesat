@@ -13,11 +13,11 @@ This repository contains the embedded firmware running on the STM32F411 microcon
 <br>
 
 <p align="center">
-  <a href="https://github.com/user-attachments/assets/9f3fd871-63c2-410a-97ac-26dfb783a112">▶ Roll (X) Axis Response</a>
+  <a href="https://github.com/user-attachments/assets/eb8c57fb-54d0-49c9-8820-b02501b1391d">▶ Roll (X) Axis Response</a>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/user-attachments/assets/9f3fd871-63c2-410a-97ac-26dfb783a112">▶ Pitch (Y) Axis Response</a>
+  <a href="https://github.com/user-attachments/assets/22449e7b-1c89-44c5-8474-6231cad3724d">▶ Pitch (Y) Axis Response</a>
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href="https://github.com/user-attachments/assets/9f3fd871-63c2-410a-97ac-26dfb783a112">▶ Yaw (Z) Axis Response</a>
+  <a href="https://github.com/user-attachments/assets/2f6191ae-c621-444c-a123-9df5dfde9a5e">▶ Yaw (Z) Axis Response</a>
 </p>
 
 ## Contents
